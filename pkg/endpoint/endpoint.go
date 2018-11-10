@@ -165,11 +165,6 @@ type Endpoint struct {
 	// information of the endpoint has changed
 	identityRevision int
 
-	// LXCMAC is the MAC address of the endpoint
-	//
-	// FIXME: Rename this field to MAC
-	LXCMAC mac.MAC // Container MAC address.
-
 	// IPv6 is the IPv6 address of the endpoint
 	IPv6 addressing.CiliumIPv6
 
@@ -444,14 +439,6 @@ func NewEndpointFromChangeModel(base *models.EndpointChangeRequest) (*Endpoint, 
 	ep.UpdateLogger(nil)
 
 	ep.SetStateLocked(string(base.State), "Endpoint creation")
-	if base.Mac != "" {
-		m, err := mac.ParseMAC(base.Mac)
-		if err != nil {
-			return nil, err
-		}
-		ep.LXCMAC = m
-	}
-
 	if base.HostMac != "" {
 		m, err := mac.ParseMAC(base.HostMac)
 		if err != nil {
@@ -534,7 +521,6 @@ func (e *Endpoint) GetModelRLocked() *models.Endpoint {
 				}},
 				InterfaceIndex: int64(e.IfIndex),
 				InterfaceName:  e.IfName,
-				Mac:            e.LXCMAC.String(),
 				HostMac:        e.NodeMAC.String(),
 			},
 			ExternalIdentifiers: &models.EndpointIdentifiers{
@@ -1212,11 +1198,6 @@ func (e *Endpoint) GetBPFKeys() []*lxcmap.EndpointKey {
 // GetBPFValue returns the value which should represent this endpoint in the
 // BPF endpoints map
 func (e *Endpoint) GetBPFValue() (*lxcmap.EndpointInfo, error) {
-	mac, err := e.LXCMAC.Uint64()
-	if err != nil {
-		return nil, fmt.Errorf("invalid LXC MAC: %v", err)
-	}
-
 	nodeMAC, err := e.NodeMAC.Uint64()
 	if err != nil {
 		return nil, fmt.Errorf("invalid node MAC: %v", err)
@@ -1228,7 +1209,6 @@ func (e *Endpoint) GetBPFValue() (*lxcmap.EndpointInfo, error) {
 		// written into the packet without an additional byte order
 		// conversion.
 		LxcID:   e.ID,
-		MAC:     lxcmap.MAC(mac),
 		NodeMAC: lxcmap.MAC(nodeMAC),
 	}
 

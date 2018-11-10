@@ -152,7 +152,6 @@ func (ds *DaemonSuite) TestUpdateConsumerMap(c *C) {
 	e.IfName = "dummy1"
 	e.IPv6 = QAIPv6Addr
 	e.IPv4 = QAIPv4Addr
-	e.LXCMAC = QAHardAddr
 	e.NodeMAC = QAHardAddr
 
 	err2 := os.Mkdir("1", 755)
@@ -179,7 +178,6 @@ func (ds *DaemonSuite) TestUpdateConsumerMap(c *C) {
 	e.IfName = "dummy1"
 	e.IPv6 = ProdIPv6Addr
 	e.IPv4 = ProdIPv4Addr
-	e.LXCMAC = ProdHardAddr
 	e.NodeMAC = ProdHardAddr
 	e.SetIdentity(prodBarSecLblsCtx)
 	e.UnconditionalLock()
@@ -447,7 +445,6 @@ func (ds *DaemonSuite) TestRemovePolicy(c *C) {
 	e.IfName = "dummy1"
 	e.IPv6 = QAIPv6Addr
 	e.IPv4 = QAIPv4Addr
-	e.LXCMAC = QAHardAddr
 	e.NodeMAC = QAHardAddr
 	err2 := os.Mkdir("1", 755)
 	c.Assert(err2, IsNil)

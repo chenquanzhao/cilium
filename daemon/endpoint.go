@@ -377,11 +377,6 @@ func (h *patchEndpointID) Handle(params PatchEndpointIDParams) middleware.Respon
 		}
 	}
 
-	if epTemplate.Mac != "" && bytes.Compare(ep.LXCMAC, newEp.LXCMAC) != 0 {
-		ep.LXCMAC = newEp.LXCMAC
-		changed = true
-	}
-
 	if epTemplate.HostMac != "" && bytes.Compare(ep.NodeMAC, newEp.NodeMAC) != 0 {
 		ep.NodeMAC = newEp.NodeMAC
 		changed = true
